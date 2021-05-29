@@ -2,11 +2,15 @@ import java.io.IOException;
 import java.util.*;
 
 public class classeMain {
-    //2 attributs de la classe 'Main' :
-    //1. Une liste contenant toutes les solutions possibles du probleme SAT
-    static ArrayList<List<Integer>> EnsembleSolutions = new ArrayList<>();
+    //3 attributs de la classe 'Main' :
+    //1. Un objet de la classe SolutionFormat
+    SolutionFormat Solution = new SolutionFormat();
     //2. un objet de la classe 'cnf'
-    cnf SATProblem;
+    cnf SATProblem ;
+    //3. Un boolean qui arrete le parcours dès que la fonction trouve une solution au probleme
+    boolean solutionFound = false;
+    //variables necessaires pour calculer le temps d'execution
+    long startTime, stopTime;
     //Constructeur
     public classeMain(cnf SATProblem) {
         this.SATProblem = SATProblem;
@@ -28,36 +32,44 @@ public class classeMain {
     }
     //Methode recursive qui fait un parcours en profondeur pour trouver une solution (si elle existe)
     // à un probleme SAT donné
-    public void DFS (int noeud, ArrayList<Integer> solution, int niveau,ArrayList<Integer> SATGlobal){
+    public void  DFS (int noeud, ArrayList<Integer> solution, int niveau,ArrayList<Integer> SATGlobal){
         if(noeud==0){//Le Début du parcours
             DFS(Math.abs(noeud)+1,solution,niveau+1,SATGlobal);
             DFS(-(Math.abs(noeud)+1),solution,niveau+1,SATGlobal);
         }
         else{
-            // Creer le litteral
-            litteral Noeud = new litteral(noeud, SATProblem.matrice);
-            // ajouter le litteral à la liste (ArrayList) 'solution'
-            if(!solution.contains(Noeud.valeur) && !solution.contains(-Noeud.valeur))
-                solution.add(Noeud.valeur);
-            // ajouter les clauses que satisfait ce litteral à l'ensemble de clauses satisfaites
-            //par les noeuds du parcours
-            SATGlobal = Union(SATGlobal,Noeud.SATLocal);
-            //appels recursives au litteral qui suit celui-là (par valeur positive et negative)
-            if(niveau<SATProblem.nombreVariables){
-                DFS(Math.abs(noeud)+1,solution,niveau+1,SATGlobal);
-                DFS(-(Math.abs(noeud)+1),solution,niveau+1,SATGlobal);
-            }
-            else
-                // Quand le parcours au feuilles de l'arbre, le programme verifie si la solution atteinte
-                //résoue le problème SAT ou pas (si oui la solution est ajoutée  l'attribut 'EnsembleSolutions'
-                if(niveau==SATProblem.nombreVariables){
-                    //System.out.println(solution+" : "+ensembleSatisfait(SATGlobal)+" - "+SATGlobal);
-                    if(ensembleSatisfait(SATGlobal)){
-                        System.out.println(solution);
-                        EnsembleSolutions.add(solution);
-                    }
+            if(!solutionFound){
+                // Creer le litteral
+                litteral Noeud = new litteral(noeud, SATProblem.matrice);
+                // ajouter le litteral à la liste (ArrayList) 'solution'
+                if(!solution.contains(Noeud.valeur) && !solution.contains(-Noeud.valeur))
+                    solution.add(Noeud.valeur);
+                // ajouter les clauses que satisfait ce litteral à l'ensemble de clauses satisfaites
+                //par les noeuds du parcours
+                SATGlobal = Union(SATGlobal,Noeud.SATLocal);
+                //appels recursives au litteral qui suit celui-là (par valeur positive et negative)
+                if(niveau<SATProblem.nombreVariables){
+                    DFS(Math.abs(noeud)+1,solution,niveau+1,SATGlobal);
+                    DFS(-(Math.abs(noeud)+1),solution,niveau+1,SATGlobal);
                 }
-            solution.remove(solution.size()-1);
+                else
+                    // Quand le parcours au feuilles de l'arbre, le programme verifie si la solution atteinte
+                    //résoue le problème SAT ou pas (si oui la solution est ajoutée  l'attribut 'Solution' et
+                    // le processus de recherche de solution s'arrete )
+                    if(niveau==SATProblem.nombreVariables){
+                        if( ensembleSatisfait(SATGlobal)){
+                            solutionFound = true;
+                            System.out.println(solution);
+                            ArrayList<String> s = new ArrayList<>();
+                            stopTime  = System.currentTimeMillis();
+                            for (Integer i : solution)
+                                s.add(String.valueOf(i));
+                            this.Solution.setSolutionValues(s);
+                            this.Solution.setTime(String.valueOf(stopTime-startTime));
+                        }
+                    }
+                solution.remove(solution.size()-1);
+            }
         }
     }
 
@@ -65,8 +77,9 @@ public class classeMain {
         cnf fichierCNF = new cnf("uf20-01000.cnf");
         classeMain Recherche = new classeMain(fichierCNF);
         ArrayList<Integer> SATGlobal = new ArrayList<>();
-        System.out.println("Les solutions possibles :");
+        Recherche.startTime = System.currentTimeMillis();
         Recherche.DFS(0,new ArrayList<>(),0,SATGlobal);
-        //System.out.println(Recherche.EnsembleSolutions);
+        //System.out.println(Recherche.Solution.getSolutionValues());
+        //System.out.println(Recherche.Solution.getTime());
     }
 }
