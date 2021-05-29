@@ -114,7 +114,7 @@ public class Solution {
         int literal; /* Store actual literal */
 
 
-        for(int i=0; i<clausesSet.getNombreClauses(); i++) { /* Browse all clauses of "clauses set" */
+        for(int i=0; i<clausesSet.getMatrice().size(); i++) { /* Browse all clauses of "clauses set" */
             for(int j=0; j<clausesSet.getMatrice().get(i).size()-1; j++) { /* Browse all literals of actual clause */
                 literal = clausesSet.getMatrice().get(i).get(j);
 
