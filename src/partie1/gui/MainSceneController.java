@@ -31,17 +31,16 @@ public class MainSceneController implements Initializable {
     @FXML TableColumn<Myclass, String> c2 ;
     @FXML TableColumn<Myclass,String> c3 ;
 
-    public ObservableList<Myclass> Data = FXCollections.observableArrayList();
-
     ArrayList<Myclass> container = new ArrayList<>();
     int nbvar = -1 ;
-    ObservableList<Myclass> m = FXCollections.observableArrayList();
+    public ObservableList<Myclass> m = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle rb){
-        c1.setCellValueFactory( new PropertyValueFactory<Myclass,String>("first"));
-        c2.setCellValueFactory( new PropertyValueFactory<Myclass,String>("second"));
-        c3.setCellValueFactory( new PropertyValueFactory<Myclass,String>("third"));
+        c1.setCellValueFactory( data -> data.getValue().getfirst());
+        c2.setCellValueFactory( data -> data.getValue().getsecond());
+        c3.setCellValueFactory( data -> data.getValue().getthird());
+        //data -> data.getValue().userIdProperty().asString()
     }
 
     /*
@@ -115,7 +114,7 @@ public class MainSceneController implements Initializable {
     public void populate(){
         for (Myclass myclass : container) {
             System.out.println(myclass.getthird() + " " + myclass.getsecond() + " " + myclass.getthird());
-            m.add(new Myclass(myclass.getfirst(), myclass.getsecond(), myclass.getthird()));
+            m.add(new Myclass(myclass.getfirst().get(), myclass.getsecond().get(), myclass.getthird().get()));
         }
     }
 /*

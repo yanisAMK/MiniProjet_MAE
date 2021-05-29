@@ -1,32 +1,36 @@
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 import java.util.List;
 
 public class Myclass{
-    public SimpleStringProperty first;
-    public SimpleStringProperty second;
-    public SimpleStringProperty third;
+    public StringProperty first;
+    public StringProperty second;
+    public StringProperty third;
 
     public Myclass(String first, String second, String third){
+
         this.first = new SimpleStringProperty(first);
-        this.second = new SimpleStringProperty(second);
+        this.second= new SimpleStringProperty(second);
         this.third = new SimpleStringProperty(third);
     }
     public Myclass(String[] lst){
-        this.first = new SimpleStringProperty(lst[0]);
-        this.second = new SimpleStringProperty(lst[1]);
-        this.third = new SimpleStringProperty(lst[3]);
+
+
+        this.first= new SimpleStringProperty(lst[0]);
+        this.second= new SimpleStringProperty(lst[1]);
+        this.third= new SimpleStringProperty(lst[3]);
     }
 
 
-    public String getfirst(){
-        return this.first.get();
+    public StringProperty getfirst(){
+        return this.first;
     }
-    public String getsecond(){
-        return this.second.get();
+    public StringProperty getsecond(){
+        return this.second;
     }
-    public String getthird(){
-        return this.third.get();
+    public StringProperty getthird(){
+        return this.third;
     }
 
     public void setFirst(String first) {
