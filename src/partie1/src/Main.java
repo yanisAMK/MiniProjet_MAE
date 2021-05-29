@@ -1,94 +1,27 @@
-import java.awt.Desktop;
-import java.io.File;
-import java.io.FileFilter;
+
 import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 public final class Main extends Application {
 
-    private Desktop desktop = Desktop.getDesktop();
+//    private Desktop desktop = Desktop.getDesktop();
 
     @Override
     public void start(final Stage stage) throws IOException {
         stage.setTitle("Sat solver");
         FXMLLoader loader = new FXMLLoader(getClass().getResource("projetmae.fxml"));
-
-
-       MainSceneController controller = new MainSceneController();
-  //      loader.setController(controller);
-
         Parent root = loader.load();
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
-
-    /*    openButton.setOnAction(
-                new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(final ActionEvent e) {
-                        // Set extension filter
-                       FileChooser.ExtensionFilter extFilter =
-                                new FileChooser.ExtensionFilter( "CNF files","*.cnf");
-
-                        fileChooser.getExtensionFilters().addAll(extFilter);
-
-                        File file = fileChooser.showOpenDialog(stage);
-
-                        if (file != null) {
-                            openFile(file);
-                        }
-                    }
-                });
-
-
-        final GridPane inputGridPane = new GridPane();
-
-        GridPane.setConstraints(openButton, 0, 0);
-        inputGridPane.setHgap(6);
-        inputGridPane.setVgap(6);
-        inputGridPane.getChildren().addAll(openButton);
-
-        final Pane rootGroup = new VBox(12);
-        rootGroup.getChildren().addAll(inputGridPane);
-        rootGroup.setPadding(new Insets(12, 12, 12, 12));
-
-
-        stage.setScene(new Scene(rootGroup));
-        stage.show();
-
-
-
-        FXMLLoader loader = new FXMLLoader();
-        loader.setController(new MainSceneController());
-
-     */
     }
 
     public static void main(String[] args) {
-
         Application.launch(args);
-
     }
 
 

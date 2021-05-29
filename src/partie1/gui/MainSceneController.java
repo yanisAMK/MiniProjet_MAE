@@ -3,9 +3,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import java.io.*;
 import java.net.URL;
@@ -15,20 +14,32 @@ import java.util.ResourceBundle;
 
 
 public class MainSceneController implements Initializable {
-
+    @FXML private Text nbclauses;
+    @FXML private Text exetime;
+    @FXML private Text nbvariables;
     @FXML private Label filenamelable;
+    @FXML private Button computebtn;
+    @FXML private ChoiceBox<String> algorithmeBox;
+
     //Myclass simple structure to hold the row values of Cnf Files
-    @FXML TableView<Myclass> table;
-    @FXML TableColumn<Myclass,String> c1 ;
-    @FXML TableColumn<Myclass, String> c2 ;
-    @FXML TableColumn<Myclass,String> c3 ;
+    @FXML   private TableView<Myclass> table;
+    @FXML   private TableColumn<Myclass,String> c1 ;
+    @FXML   private TableColumn<Myclass, String> c2 ;
+    @FXML   private TableColumn<Myclass,String> c3 ;
+
+    //Contains the path to the file
+    public String filePath;
+
     //Container contains all the rows structured
-    ArrayList<Myclass> container = new ArrayList<>();
+    public ArrayList<Myclass> container = new ArrayList<>();
+
     //number of variables in the whole File Todo: check this one
-    int nbvar = -1 ;
+    public int nbvar = -1 ;
+
     //the appropriate structure to populate TableVeiw table
     public ObservableList<Myclass> m = FXCollections.observableArrayList();
 
+    public cnf cnfObject ;
 
     //Initializing columns to the appropriate type of values
     //DO NOT USE PropretyValueFactory to initialize !
@@ -37,6 +48,7 @@ public class MainSceneController implements Initializable {
         c1.setCellValueFactory( data -> data.getValue().getfirst());
         c2.setCellValueFactory( data -> data.getValue().getsecond());
         c3.setCellValueFactory( data -> data.getValue().getthird());
+        algorithmeBox.getItems().addAll("BFS","DFS","A*");
     }
 
     /*
@@ -52,10 +64,10 @@ public class MainSceneController implements Initializable {
         File f = chooser.showOpenDialog(null);
         if(f != null){
             filenamelable.setText("file: "+f.getName());
+            filePath = f.getAbsolutePath();
             readfile(f);
             populate();
             table.setItems(m);
-            System.out.println("dagi");
         }
     }
 
@@ -88,16 +100,53 @@ public class MainSceneController implements Initializable {
         br.close();
         line = null;
     }
+
     /*
     populates ObservableListe object which is necessary to populate TableView
     takes the data from container
      */
     public void populate(){
+        nbclauses.setText("Nbclauses : " + container.size());
+        nbvariables.setText("Nbvariables : "+ nbvar);
         for (Myclass myclass : container) {
-            System.out.println(myclass.getthird() + " " + myclass.getsecond() + " " + myclass.getthird());
+            //uncomment to check the values in container
+            //System.out.println(myclass.getthird() + " " + myclass.getsecond() + " " + myclass.getthird());
             m.add(new Myclass(myclass.getfirst().get(), myclass.getsecond().get(), myclass.getthird().get()));
         }
     }
+    public void compute(){
+        System.out.println("Computing ...");
+        if(algorithmeBox.getValue() == "BFS"){
+            bfsAction();
+        }
+        if(algorithmeBox.getValue() == "DFS"){
+            dfsAction();
+        }
+        if(algorithmeBox.getValue() == "A*"){
+            aAction();
+        }
+        System.out.println("Computing finished !");
+    }
+
+
+    // algoBox = bfs
+    public void bfsAction(){
+        cnfObject = new cnf(filePath);
+        Solution list = BreadthFirstSearch(cnfObject);
+    }
+
+    //algoBox = DFS
+    public void dfsAction(){
+        cnfObject = new cnf(filePath);
+        classeMain dfs = new classeMain(cnfObject);
+    }
+
+    //algoBox = A*
+    public void aAction(){
+        cnfObject = new cnf(filePath);
+
+    }
+
 
         /*
         TODO: where to use this one ?
@@ -137,7 +186,7 @@ public class MainSceneController implements Initializable {
                 open.add(new Solution(currentSol));
             }
         } while (!open.isEmpty());
-
+        System.out.println("Done");
         return bestSolution;
 
     }
