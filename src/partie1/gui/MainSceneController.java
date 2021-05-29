@@ -1,91 +1,69 @@
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
-
 import java.io.*;
-
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.ResourceBundle;
 
 
 public class MainSceneController implements Initializable {
 
-    private static final ObservableList<List<Integer>> data = FXCollections.observableArrayList();
     @FXML private Label filenamelable;
+    //Myclass simple structure to hold the row values of Cnf Files
     @FXML TableView<Myclass> table;
     @FXML TableColumn<Myclass,String> c1 ;
     @FXML TableColumn<Myclass, String> c2 ;
     @FXML TableColumn<Myclass,String> c3 ;
-
+    //Container contains all the rows structured
     ArrayList<Myclass> container = new ArrayList<>();
+    //number of variables in the whole File Todo: check this one
     int nbvar = -1 ;
+    //the appropriate structure to populate TableVeiw table
     public ObservableList<Myclass> m = FXCollections.observableArrayList();
 
+
+    //Initializing columns to the appropriate type of values
+    //DO NOT USE PropretyValueFactory to initialize !
     @Override
     public void initialize(URL url, ResourceBundle rb){
         c1.setCellValueFactory( data -> data.getValue().getfirst());
         c2.setCellValueFactory( data -> data.getValue().getsecond());
         c3.setCellValueFactory( data -> data.getValue().getthird());
-        //data -> data.getValue().userIdProperty().asString()
     }
 
     /*
-    @FXML
-    private void buttonClicked() {
-       // testTable.getColumns().addAll(c1, c2,c3);         // Set extension filter
-           mainButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(final ActionEvent e) {
-                FileChooser.ExtensionFilter extFilter =
-                        new FileChooser.ExtensionFilter("CNF files", "*.cnf");
-                fileChooser.getExtensionFilters().addAll(extFilter);
-                Stage thisStage = (Stage) mainButton.getScene().getWindow();
-                File file = fileChooser.showOpenDialog(thisStage);
-                if (file != null) {
-                    openFile(file);
-                }
-            }});
-       testTable.setItems(data);
-    }
-    */
-
-    /*
-    new file choosing function
+    Selecting and importing a file
+    calls : readfile function
+            populate function
+            and sets the values of tableValues' columns
      */
     @FXML
-    private void importfile(ActionEvent event) throws IOException {
+    private void importfile() throws IOException {
         FileChooser chooser = new FileChooser();
         chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("cnf files", "*.cnf"));
         File f = chooser.showOpenDialog(null);
         if(f != null){
             filenamelable.setText("file: "+f.getName());
-            //openFile(f);
-
             readfile(f);
             populate();
             table.setItems(m);
-
-
             System.out.println("dagi");
-            //testTable.setItems(data);
         }
     }
 
-
+    /*
+    reads the file
+    ignores comments and stuff
+    turns lines into a three variable clause stored as Myclass type in container
+     */
     public void readfile(File file) throws IOException { // file into array, stores the number of variables in nbvar, nbclauses = the size of the array
         BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
         String line;
@@ -101,8 +79,8 @@ public class MainSceneController implements Initializable {
             if (line.contains("cnf")){ //reads the number of variables
                 nbvar = Integer.parseInt(line.split(" ")[2]);
             }
-
-            if(line.indexOf('c') == -1){   // reads lines and stores them in an array
+            // reads lines and stores them in an array
+            if(line.indexOf('c') == -1){
                 String[] cn = line.split(" ");
                 container.add(new Myclass(cn[0], cn[1],cn[2]));
             }
@@ -110,31 +88,21 @@ public class MainSceneController implements Initializable {
         br.close();
         line = null;
     }
-
+    /*
+    populates ObservableListe object which is necessary to populate TableView
+    takes the data from container
+     */
     public void populate(){
         for (Myclass myclass : container) {
             System.out.println(myclass.getthird() + " " + myclass.getsecond() + " " + myclass.getthird());
             m.add(new Myclass(myclass.getfirst().get(), myclass.getsecond().get(), myclass.getthird().get()));
         }
     }
-/*
-    private void openFile(File file){
-            cnf liste_clauses = new cnf(file.getPath());
-            for(int i=0;i<liste_clauses.getMatrice().size();i++) {
 
-                List<Integer> firstRow = new ArrayList<>();
-                for (int k=0; k<liste_clauses.getMatrice().get(i).size();k++) {
-
-                    firstRow.add(k, liste_clauses.getMatrice().get(i).get(k));
-                }
-                data.add(firstRow);
-            }
-            System.out.println(testTable.getItems());
-            Solution list = BreadthFirstSearch(liste_clauses);
-            System.out.println(list);
-    }
-
-*/
+        /*
+        TODO: where to use this one ?
+        Solution list = BreadthFirstSearch(liste_clauses);
+        */
     public Solution BreadthFirstSearch(cnf clset) {////, long execTimeMillis) {
         LinkedList<Solution> open = new LinkedList<Solution>();
         Solution currentSol = new Solution(clset.getNombreVariables());
