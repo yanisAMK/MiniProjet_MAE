@@ -38,6 +38,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -70,13 +71,10 @@
             <TableColumn fx:id="c3" prefWidth="105.0" text="C3" />
         </columns>
       </TableView>
-      <TableView layoutX="401.0" layoutY="50.0" prefHeight="254.0" prefWidth="348.0">
-        <columns>
-          <TableColumn prefWidth="75.0" text="Solution1" />
-        </columns>
-      </TableView>
       <Button fx:id="computeBtn" layoutX="72.0" layoutY="273.0" mnemonicParsing="false" onAction="#compute" prefHeight="25.0" prefWidth="134.0" text="Compute" />
       <ChoiceBox fx:id="algorithmeBox" layoutX="112.0" layoutY="25.0" prefHeight="25.0" prefWidth="150.0" />
       <Label layoutX="37.0" layoutY="29.0" prefHeight="17.0" prefWidth="75.0" text="Algorithme :" />
+      <ListView fx:id="solutionlist" layoutX="447.0" layoutY="50.0" prefHeight="280.0" prefWidth="200.0" />
+      <Label layoutX="447.0" layoutY="29.0" prefHeight="25.0" prefWidth="200.0" text="Solutions" textAlignment="CENTER" />
    </children>
 </AnchorPane>

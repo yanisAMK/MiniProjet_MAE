@@ -20,7 +20,7 @@ public class MainSceneController implements Initializable {
     @FXML private Label filenamelable;
     @FXML private Button computebtn;
     @FXML private ChoiceBox<String> algorithmeBox;
-
+    @FXML private ListView<String> solutionlist;
     //Myclass simple structure to hold the row values of Cnf Files
     @FXML   private TableView<Myclass> table;
     @FXML   private TableColumn<Myclass,String> c1 ;
@@ -110,21 +110,26 @@ public class MainSceneController implements Initializable {
         nbvariables.setText("Nbvariables : "+ nbvar);
         for (Myclass myclass : container) {
             //uncomment to check the values in container
-            //System.out.println(myclass.getthird() + " " + myclass.getsecond() + " " + myclass.getthird());
+            System.out.print(myclass.getthird() + " " + myclass.getsecond() + " " + myclass.getthird());
+            System.out.println(myclass.getthird().get() + " " + myclass.getsecond().get() + " " + myclass.getthird().get());
             m.add(new Myclass(myclass.getfirst().get(), myclass.getsecond().get(), myclass.getthird().get()));
         }
     }
     public void compute(){
         System.out.println("Computing ...");
-        if(algorithmeBox.getValue() == "BFS"){
+        if(algorithmeBox.getValue().equals("BFS")){
             bfsAction();
         }
-        if(algorithmeBox.getValue() == "DFS"){
+        if(algorithmeBox.getValue().equals("DFS")){
             dfsAction();
         }
-        if(algorithmeBox.getValue() == "A*"){
+        if(algorithmeBox.getValue().equals("A*")){
             aAction();
         }
+        // TODO: set values in solutionlist
+        // TODO: set exetime
+        // exetime.setText(String);
+        // solutionlist.getItems().addAll(collection<String>);
         System.out.println("Computing finished !");
     }
 
