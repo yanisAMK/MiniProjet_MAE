@@ -18,6 +18,8 @@ public class SolutionFormat {
         this.exeTime = time;
         this.solutionValues = solutionValues;
     }
+    public SolutionFormat() {
+    }
     public void setTime(String time) {
         this.exeTime = time;
     }
