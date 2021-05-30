@@ -4,7 +4,7 @@ import java.util.*;
 public class classeMain {
     //3 attributs de la classe 'Main' :
     //1. Un objet de la classe SolutionFormat
-    SolutionFormat Solution = new SolutionFormat();
+    public SolutionFormat solution = new SolutionFormat();
     //2. un objet de la classe 'cnf'
     cnf SATProblem ;
     //3. Un boolean qui arrete le parcours dès que la fonction trouve une solution au probleme
@@ -64,8 +64,8 @@ public class classeMain {
                             stopTime  = System.currentTimeMillis();
                             for (Integer i : solution)
                                 s.add(String.valueOf(i));
-                            this.Solution.setSolutionValues(s);
-                            this.Solution.setTime(String.valueOf(stopTime-startTime));
+                            this.solution.setSolutionValues(s);
+                            this.solution.setTime(String.valueOf(stopTime-startTime));
                         }
                     }
                 solution.remove(solution.size()-1);

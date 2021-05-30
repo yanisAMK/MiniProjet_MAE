@@ -40,7 +40,7 @@ public class MainSceneController implements Initializable {
     public ObservableList<Myclass> m = FXCollections.observableArrayList();
 
     public cnf cnfObject ;
-
+    public SolutionFormat solution = new SolutionFormat();
     //Initializing columns to the appropriate type of values
     //DO NOT USE PropretyValueFactory to initialize !
     @Override
@@ -72,7 +72,7 @@ public class MainSceneController implements Initializable {
     }
 
     /*
-    reads the file
+    reads the whole file
     ignores comments and stuff
     turns lines into a three variable clause stored as Myclass type in container
      */
@@ -104,14 +104,15 @@ public class MainSceneController implements Initializable {
     /*
     populates ObservableListe object which is necessary to populate TableView
     takes the data from container
+    ALL cnf file clauses are in the container (ignores the number of closes present on the file)
      */
     public void populate(){
         nbclauses.setText("Nbclauses : " + container.size());
         nbvariables.setText("Nbvariables : "+ nbvar);
         for (Myclass myclass : container) {
             //uncomment to check the values in container
-            System.out.print(myclass.getthird() + " " + myclass.getsecond() + " " + myclass.getthird());
-            System.out.println(myclass.getthird().get() + " " + myclass.getsecond().get() + " " + myclass.getthird().get());
+            //System.out.print(myclass.getthird() + " " + myclass.getsecond() + " " + myclass.getthird());
+            //System.out.println(myclass.getthird().get() + " " + myclass.getsecond().get() + " " + myclass.getthird().get());
             m.add(new Myclass(myclass.getfirst().get(), myclass.getsecond().get(), myclass.getthird().get()));
         }
     }
@@ -126,10 +127,12 @@ public class MainSceneController implements Initializable {
         if(algorithmeBox.getValue().equals("A*")){
             aAction();
         }
+        System.out.println("Time: " + solution.getTime());
+        System.out.println("Values: "+ solution.getSolutionValues());
         // TODO: set values in solutionlist
         // TODO: set exetime
-        // exetime.setText(String);
-        // solutionlist.getItems().addAll(collection<String>);
+        // exetime.setText(solution.getTime());
+        // solutionlist.getItems().addAll(solution.getSolutionValues());
         System.out.println("Computing finished !");
     }
 
@@ -144,6 +147,12 @@ public class MainSceneController implements Initializable {
     public void dfsAction(){
         cnfObject = new cnf(filePath);
         classeMain dfs = new classeMain(cnfObject);
+        ArrayList<Integer> SATGlobal = new ArrayList<>();
+        dfs.startTime = System.currentTimeMillis();
+        dfs.DFS(0,new ArrayList<>(),0,SATGlobal);
+        solution.setTime(dfs.solution.getTime());
+        solution.setSolutionValues(dfs.solution.getSolutionValues());
+        //TODO: test with short values
     }
 
     //algoBox = A*
