@@ -1,6 +1,8 @@
 import java.io.IOException;
 import java.util.*;
 
+import static java.lang.Math.abs;
+
 public class classeMain {
     //3 attributs de la classe 'Main' :
     //1. Un objet de la classe SolutionFormat
@@ -34,8 +36,8 @@ public class classeMain {
     // à un probleme SAT donné
     public void  DFS (int noeud, ArrayList<Integer> solution, int niveau,ArrayList<Integer> SATGlobal){
         if(noeud==0){//Le Début du parcours
-            DFS(Math.abs(noeud)+1,solution,niveau+1,SATGlobal);
-            DFS(-(Math.abs(noeud)+1),solution,niveau+1,SATGlobal);
+            DFS(abs(noeud)+1,solution,niveau+1,SATGlobal);
+            DFS(-(abs(noeud)+1),solution,niveau+1,SATGlobal);
         }
         else{
             if(!solutionFound){
@@ -49,8 +51,8 @@ public class classeMain {
                 SATGlobal = Union(SATGlobal,Noeud.SATLocal);
                 //appels recursives au litteral qui suit celui-là (par valeur positive et negative)
                 if(niveau<SATProblem.nombreVariables){
-                    DFS(Math.abs(noeud)+1,solution,niveau+1,SATGlobal);
-                    DFS(-(Math.abs(noeud)+1),solution,niveau+1,SATGlobal);
+                    DFS(abs(noeud)+1,solution,niveau+1,SATGlobal);
+                    DFS(-(abs(noeud)+1),solution,niveau+1,SATGlobal);
                 }
                 else
                     // Quand le parcours au feuilles de l'arbre, le programme verifie si la solution atteinte
@@ -62,8 +64,11 @@ public class classeMain {
                             System.out.println(solution);
                             ArrayList<String> s = new ArrayList<>();
                             stopTime  = System.currentTimeMillis();
-                            for (Integer i : solution)
-                                s.add(String.valueOf(i));
+
+                            for (Integer i : solution){
+                                int j = i>0 ? 1: 0;
+                                s.add("X" + abs(i) + ": " + j);
+                            }
                             this.solution.setSolutionValues(s);
                             this.solution.setTime(String.valueOf(stopTime-startTime));
                         }

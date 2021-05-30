@@ -130,9 +130,8 @@ public class MainSceneController implements Initializable {
         System.out.println("Time: " + solution.getTime());
         System.out.println("Values: "+ solution.getSolutionValues());
         // TODO: set values in solutionlist
-        // TODO: set exetime
-        // exetime.setText(solution.getTime());
-        // solutionlist.getItems().addAll(solution.getSolutionValues());
+        exetime.setText(solution.getTime() + "ms");
+        solutionlist.getItems().addAll(solution.getSolutionValues());
         System.out.println("Computing finished !");
     }
 
