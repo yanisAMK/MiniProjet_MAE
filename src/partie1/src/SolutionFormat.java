@@ -13,7 +13,10 @@ public class SolutionFormat {
     public String getTime() {
         return exeTime;
     }
-
+    public SolutionFormat(SolutionFormat s){
+        this.setTime(s.getTime());
+        this.setSolutionValues(s.getSolutionValues());
+    }
     public SolutionFormat(String time, ArrayList<String> solutionValues) {
         this.exeTime = time;
         this.solutionValues = solutionValues;

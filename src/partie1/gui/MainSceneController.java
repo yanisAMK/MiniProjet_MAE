@@ -119,8 +119,11 @@ public class MainSceneController implements Initializable {
         }
     }
 
-
-    public void compute(){
+    /*
+    lunches solving methods according to the chosen algorithm
+    updates the values of exeTime and solutionlist
+     */
+    public void compute() throws IOException {
         System.out.println("Computing ...");
         if(algorithmeBox.getValue().equals("BFS")){
             bfsAction();
@@ -165,8 +168,9 @@ public class MainSceneController implements Initializable {
     }
 
     //algoBox = A*
-    public void aAction(){
-        cnfObject = new cnf(filePath);
+    public void aAction() throws IOException {
+        mainA solver = new mainA(filePath);
+        solution = new SolutionFormat(solver.startA());
 
     }
 
