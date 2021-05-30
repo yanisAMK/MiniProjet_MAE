@@ -12,13 +12,14 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
 
+import static java.lang.Math.abs;
+
 
 public class MainSceneController implements Initializable {
     @FXML private Text nbclauses;
     @FXML private Text exetime;
     @FXML private Text nbvariables;
     @FXML private Label filenamelable;
-    @FXML private Button computebtn;
     @FXML private ChoiceBox<String> algorithmeBox;
     @FXML private ListView<String> solutionlist;
     //Myclass simple structure to hold the row values of Cnf Files
@@ -41,6 +42,7 @@ public class MainSceneController implements Initializable {
 
     public cnf cnfObject ;
     public SolutionFormat solution = new SolutionFormat();
+    public long timer;
     //Initializing columns to the appropriate type of values
     //DO NOT USE PropretyValueFactory to initialize !
     @Override
@@ -116,6 +118,8 @@ public class MainSceneController implements Initializable {
             m.add(new Myclass(myclass.getfirst().get(), myclass.getsecond().get(), myclass.getthird().get()));
         }
     }
+
+
     public void compute(){
         System.out.println("Computing ...");
         if(algorithmeBox.getValue().equals("BFS")){
@@ -139,7 +143,14 @@ public class MainSceneController implements Initializable {
     // algoBox = bfs
     public void bfsAction(){
         cnfObject = new cnf(filePath);
-        Solution list = BreadthFirstSearch(cnfObject);
+        timer = System.currentTimeMillis();
+        ArrayList<Integer> s = BreadthFirstSearch(cnfObject).getSolution();
+        solution.setTime(timer+"");
+        solution.setSolutionValues(new ArrayList<String>());
+        for (Integer i : s){
+            int j = i>0 ? 1: 0;
+            solution.addSolutionValues("X" + abs(i) + ": " + j);
+        }
     }
 
     //algoBox = DFS
@@ -151,7 +162,6 @@ public class MainSceneController implements Initializable {
         dfs.DFS(0,new ArrayList<>(),0,SATGlobal);
         solution.setTime(dfs.solution.getTime());
         solution.setSolutionValues(dfs.solution.getSolutionValues());
-        //TODO: test with short values
     }
 
     //algoBox = A*
@@ -161,10 +171,7 @@ public class MainSceneController implements Initializable {
     }
 
 
-        /*
-        TODO: where to use this one ?
-        Solution list = BreadthFirstSearch(liste_clauses);
-        */
+
     public Solution BreadthFirstSearch(cnf clset) {////, long execTimeMillis) {
         LinkedList<Solution> open = new LinkedList<Solution>();
         Solution currentSol = new Solution(clset.getNombreVariables());
@@ -199,7 +206,7 @@ public class MainSceneController implements Initializable {
                 open.add(new Solution(currentSol));
             }
         } while (!open.isEmpty());
-        System.out.println("Done");
+        timer = System.currentTimeMillis() -  startTime ;
         return bestSolution;
 
     }

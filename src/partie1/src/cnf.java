@@ -107,7 +107,6 @@ public class cnf {
             int i=0;
             while (line != null && bool2) {
                 Matcher m1 = p1.matcher(line);
-                //ArrayList <String> allMatches = new ArrayList<>();
                 List <Integer> allMatches = new ArrayList<>();
                 while (m1.find())
                     allMatches.add(Integer.parseInt(m1.group()));

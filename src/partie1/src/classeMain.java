@@ -77,7 +77,7 @@ public class classeMain {
             }
         }
     }
-
+/*
     public static void main(String[] args) throws IOException {
         cnf fichierCNF = new cnf("uf20-01000.cnf");
         classeMain Recherche = new classeMain(fichierCNF);
@@ -87,4 +87,6 @@ public class classeMain {
         //System.out.println(Recherche.Solution.getSolutionValues());
         //System.out.println(Recherche.Solution.getTime());
     }
+
+ */
 }

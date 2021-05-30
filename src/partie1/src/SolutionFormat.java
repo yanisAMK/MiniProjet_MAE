@@ -27,6 +27,9 @@ public class SolutionFormat {
     public ArrayList<String> getSolutionValues() {
         return solutionValues;
     }
+    public void addSolutionValues(String x){
+        this.getSolutionValues().add(x);
+    }
 
     public void setSolutionValues(ArrayList<String> solutionValues) {
         this.solutionValues = solutionValues;
