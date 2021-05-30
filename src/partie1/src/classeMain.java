@@ -1,4 +1,4 @@
-import java.io.IOException;
+
 import java.util.*;
 
 import static java.lang.Math.abs;
@@ -77,16 +77,5 @@ public class classeMain {
             }
         }
     }
-/*
-    public static void main(String[] args) throws IOException {
-        cnf fichierCNF = new cnf("uf20-01000.cnf");
-        classeMain Recherche = new classeMain(fichierCNF);
-        ArrayList<Integer> SATGlobal = new ArrayList<>();
-        Recherche.startTime = System.currentTimeMillis();
-        Recherche.DFS(0,new ArrayList<>(),0,SATGlobal);
-        //System.out.println(Recherche.Solution.getSolutionValues());
-        //System.out.println(Recherche.Solution.getTime());
-    }
 
- */
 }

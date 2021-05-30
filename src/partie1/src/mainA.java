@@ -1,12 +1,7 @@
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
+
 import java.io.*;
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Vector;
-
-
 
 public class mainA {
 
@@ -17,19 +12,14 @@ public class mainA {
 	public mainA(String filepath){
 		this.fichierCNF = new cnf(filepath);
 	}
-   // static ArrayList <ArrayList<String>> matrice = new ArrayList<>(); //matrice des clauses
 	public cnf fichierCNF ;
     public SolutionFormat startA () throws IOException{
-	
-	//cnfFile2Matrix("cnfFile.cnf");//convertion du fichier en matrice de clauses
-    	
-	
+
 	Vector <Literal> liste = new Vector<Literal>();//la liste des littéraux de notre sat
 	int i,k=0;
 	for(i=-fichierCNF.nombreVariables;i<=fichierCNF.nombreVariables;i++){//initialisatuion du vecteur de lit
 		if(i!=0)
 			{liste.add(new Literal(i));//0 ne sera pas instancié, chaque lit a comme : var=i et val=-1
-			//System.out.print(liste.get(k).var);k++;
 			}
 		
 	}

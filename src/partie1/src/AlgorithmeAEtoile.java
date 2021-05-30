@@ -107,7 +107,6 @@ public class AlgorithmeAEtoile {
 		
     }
 	for(int j=0; j<solution.get(solution.size()-1).liste.size();j++) {
-		//System.out.println(solution.get(solution.size()-1).liste.get(j).var+"="+solution.get(solution.size()-1).liste.get(j).val);
 		sol.add(String.valueOf(solution.get(solution.size()-1).liste.get(j).val));
 	}
 

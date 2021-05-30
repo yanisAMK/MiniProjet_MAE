@@ -16,18 +16,6 @@ public class Solution {
             this.solution.add(solution.getLiteral(i));
     }
 
-
-    public void randomSolution() { /* Create a random solution */
-        int literalValue;
-
-        for(int i=0; i<this.getSolutionSize(); i++) {
-            literalValue = (int) (Math.random()*10)%2;
-
-            this.solution.set(i, ((i+1) * (literalValue == 0 ? -1 : 1)));
-        }
-    }
-
-
     public int randomLiteral(int literals) { /* Generate a random literal */
         int randomLiteral;
 
@@ -75,40 +63,6 @@ public class Solution {
     }
 
 
-    public boolean invertLiteral(int position) { /* Invert the truth value of a literal position "position" */
-        if((position < 0) || (position >= this.solution.size())) /* Error : index out of array's bounds */
-            return false;
-
-        this.solution.set(position, - this.solution.get(position));
-
-        return true;
-    }
-
-
-    public boolean deleteLiteral(int position) { /* Delete literal in position "position" from this solution (set to "0") */
-        if((position < 0) || (position >= this.solution.size())) /* Error : index out of array's bounds */
-            return false;
-
-        this.solution.set(position, 0);
-
-        return true;
-    }
-
-
-    public Integer difference(Solution solution) { /* Find Hamiltonian Distance: The number of positions with different values between two solutions */
-        int numDiff = 0;
-
-        if(this.getSolutionSize() != solution.getSolutionSize())
-            return null; /* If the size of the two solutions isn't the same, we cannot compare them */
-
-        for(int i=0; i<this.getSolutionSize(); i++)
-            if(this.getLiteral(i) != solution.getLiteral(i))
-                numDiff++; /* Count number of different positions */
-
-        return numDiff;
-    }
-
-
     public int satisfiedClauses(cnf clausesSet) { /* Count number of satisfied clauses by this solution */
         int count = 0; /* Counter of satisfied clauses */
         int literal; /* Store actual literal */
@@ -134,30 +88,6 @@ public class Solution {
     public boolean isSolution(cnf clausesSet) { /* Check if this solution satisfies ALL CLAUSES in "clauses set" */
         return clausesSet.getMatrice().size() == this.satisfiedClauses(clausesSet);
     }
-
-
-    public int sameSatisfiedClausesAsLiteral(cnf clausesSet, int literal) { /* Count number of satisfied clauses by "literal" already satisfied by this solution */
-        int countSat = 0;
-        int tempLiteral;
-        boolean solutionSatClause, literalSatClause;
-
-        for(int i=0; i<clausesSet.getNombreClauses(); i++) { /* Browse all clauses of "clausesSet" */
-            solutionSatClause = false;		literalSatClause = false;
-
-            for(int j=0; j<clausesSet.getMatrice().get(i).size()-1; j++) { /* Browse all literals of current clause */
-                tempLiteral = clausesSet.getMatrice().get(i).get(j);
-                if(literal == tempLiteral)
-                    literalSatClause = true; /* The literal satisfies the current clause (number "i") */
-                if(this.getLiteral(Math.abs(tempLiteral)-1) == tempLiteral)
-                    solutionSatClause = true; /* This solution satisfies the current clause (number "i") */
-            }
-            if(solutionSatClause && literalSatClause)
-                countSat++; /* If "literal" and the solution satisfies the clause "i", increment the counter "countSat" */
-        }
-
-        return countSat;
-    }
-
 
     @Override
     public boolean equals(Object obj) { /* Test the equality between two solutions */

@@ -43,6 +43,8 @@ public class MainSceneController implements Initializable {
     public cnf cnfObject ;
     public SolutionFormat solution = new SolutionFormat();
     public long timer;
+
+
     //Initializing columns to the appropriate type of values
     //DO NOT USE PropretyValueFactory to initialize !
     @Override
@@ -61,6 +63,7 @@ public class MainSceneController implements Initializable {
      */
     @FXML
     private void importfile() throws IOException {
+
         FileChooser chooser = new FileChooser();
         chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("cnf files", "*.cnf"));
         File f = chooser.showOpenDialog(null);
@@ -69,6 +72,7 @@ public class MainSceneController implements Initializable {
             filePath = f.getAbsolutePath();
             readfile(f);
             populate();
+            table.getItems().removeAll();
             table.setItems(m);
         }
     }
@@ -187,9 +191,6 @@ public class MainSceneController implements Initializable {
         long startTime = System.currentTimeMillis(); /* Save the start time of the search */
 
         do {
-            // if((System.currentTimeMillis() - startTime) >= execTimeMillis)
-            //   break; /* If the search time has reached (or exceeded) the allowed run time, finish the search */
-
             if (!open.isEmpty())
                 currentSol = open.removeFirst();
 
