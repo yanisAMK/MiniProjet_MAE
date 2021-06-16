@@ -10,6 +10,7 @@ import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Random;
 import java.util.ResourceBundle;
 
 import static java.lang.Math.abs;
@@ -151,7 +152,8 @@ public class MainSceneController implements Initializable {
     public void bfsAction(){
         cnfObject = new cnf(filePath);
         timer = System.currentTimeMillis();
-        ArrayList<Integer> s = BreadthFirstSearch(cnfObject).getSolution();
+       // ArrayList<Integer> s = BreadthFirstSearch(cnfObject).getSolution();
+        ArrayList<Integer> s = PSO(cnfObject,1,2,100,4).getSolution();
         solution.setTime(timer+"");
         solution.setSolutionValues(new ArrayList<String>());
         for (Integer i : s){
@@ -216,5 +218,122 @@ public class MainSceneController implements Initializable {
 
     }
 
+
+    private Solution PSO (cnf cnf,int c1,int c2,int numParticle,int weight)
+    {
+        ArrayList<particle> particles = new ArrayList<particle>();
+
+        Solution gbest=new Solution(cnf.getNombreVariables());//initialize gbest
+
+        for(int i=0; i<numParticle; i++) {
+            particle p=new particle();
+
+            //initialize the particle
+            //for (int j=0;j<cnf.getNombreVariables();j++)
+            //{
+               // p.setPbest(new Solution(cnf.getNombreVariables()));
+                p.setCurrent_solution(new Solution(cnf.getNombreVariables()));
+                /************generate a random solution as pbest****/
+                for(int k=0; k<p.getCurrent_solution().getSolutionSize(); k++) {
+                    int literalValue = (int) (Math.random()*10)%2;
+
+                    p.getCurrent_solution().getSolution().set(k, ((k+1) * (literalValue == 0 ? -1 : 1)));
+                }
+                p.setPbest(p.getCurrent_solution());
+
+               Random r=new Random();
+               p.setVbest( r.nextInt(cnf.getNombreVariables()));
+
+                particles.add(p);
+
+
+                if(gbest.satisfiedClauses(cnf) < particles.get(i).getCurrent_solution().satisfiedClauses(cnf))
+                    gbest = particles.get(i).getCurrent_solution();
+
+
+                System.out.println("gbbst" + gbest);
+
+        //}
+
+
+
+            for(int c=0; c<50; c++) {
+
+                for(particle particle : particles) {
+                    /******update velocity************/
+                    //v( t+1 )=
+                    //w *v( t )+c 1 r 1 Pbest- x(t))+ c 2 r 2 Gbest -x(t))
+
+                    Integer diffp;
+                    Integer diffg;
+                    int numDiffp=0;
+                    int numDiffg=0;
+
+                    /******pbest -x(t)***/
+                    if(particle.getPbest().getSolutionSize() != particle.getCurrent_solution().getSolutionSize())
+                        diffp= null; /* If the size of the two solutions isn't the same, we cannot compare them */
+
+                    for(int ii=0; ii<particle.getCurrent_solution().getSolutionSize(); ii++)
+                        if( particle.getPbest().getSolution().get(ii)!= particle.getCurrent_solution().getSolution().get(ii))
+                            numDiffp++; /* Count number of different positions */
+
+                    diffp= numDiffp;
+
+                    /******gbest -x(t)***/
+                    if(gbest.getSolutionSize() != particle.getCurrent_solution().getSolutionSize())
+                        diffp= null; /* If the size of the two solutions isn't the same, we cannot compare them */
+
+                    for(int ii=0; ii<particle.getCurrent_solution().getSolutionSize(); ii++)
+                        if( gbest.getSolution().get(ii)!= particle.getCurrent_solution().getSolution().get(ii))
+                            numDiffg++; /* Count number of different positions */
+
+                    diffg= numDiffg;
+
+                    /********************/
+                    double v=weight* particle.vbest  + c1*  Math.random() *diffp +c2*Math.random()*diffg;
+
+                    /***********************
+                     * update position
+                     *********************/
+                    int position = 0;
+                    ArrayList<Integer> avaibleLiterals = new ArrayList<Integer>(); /* List of literals that can be reversed */
+                    Random random = new Random();
+
+                    for(int il=0; il<particle.getCurrent_solution().getSolutionSize(); il++) /* Initialize the list (all literals can be reversed) */
+                        avaibleLiterals.add(il);
+
+                    for(int il=0; il<particle.getVbest(); il++) /* Reverse literals (chosen randomly) and delete them from "avaibleLiterals" (to not choose them again) */
+                         position=avaibleLiterals.remove(random.nextInt(avaibleLiterals.size()));
+                            {
+                        if ((position < 0) || (position >= particle.getCurrent_solution().getSolutionSize())) /* Error : index out of array's bounds */
+
+
+                            particle.getCurrent_solution().getSolution().set(position, -particle.getCurrent_solution().getSolution().get(position));
+                    }
+
+
+
+
+
+                    /**********************
+                     *update PBEST
+                     * ******************/
+                    for(int k=0; k<particle.getVbest(); k++)
+
+                        if(particle.getCurrent_solution().satisfiedClauses(cnf) > particle.getPbest().satisfiedClauses(cnf))
+                            particle.setPbest(particle.getCurrent_solution());
+
+                }
+
+                for(particle particle : particles)
+                    if(gbest.satisfiedClauses(cnf) < particle.getCurrent_solution().satisfiedClauses(cnf))
+                        gbest = particle.getPbest();
+
+                if(gbest.isSolution(cnf))
+                    break;
+            }
+        }
+      return gbest;
+    }
 
 }
