@@ -3,6 +3,7 @@ import java.util.ArrayList;
 
 public class Solution {
     private ArrayList<Integer> solution = new ArrayList<Integer>();
+    private float satRate;
 
 
     public Solution(int size) { /* Constructor that creates an empty solution */
@@ -14,6 +15,14 @@ public class Solution {
     public Solution(Solution solution) {
         for(int i=0; i<solution.getSolutionSize(); i++)
             this.solution.add(solution.getLiteral(i));
+    }
+
+    public float getSatRate() {
+        return satRate;
+    }
+
+    public void setSatRate(float satRate) {
+        this.satRate = satRate;
     }
 
     public int randomLiteral(int literals) { /* Generate a random literal */

@@ -1,4 +1,6 @@
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.io.*;
@@ -7,6 +9,7 @@ import java.util.List;
 
 public class cnf {
     ArrayList <List<Integer>> matrice = new ArrayList<>();
+    Map<Integer, ArrayList<Integer>> map = new HashMap<Integer, ArrayList<Integer>>();
     int nombreVariables, nombreClauses;
     //constructeur qui parcour le fichier.cnf et remplit l'attribut 'matrice' qui contient
     // toutes les clauses du probleme SAT, ainsi que le nombre de clauses et le nombre de variables.

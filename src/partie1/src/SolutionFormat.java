@@ -8,8 +8,15 @@ public class SolutionFormat {
         2-an array of sollutions : solutionValues  type: ArrayList<String>
      */
     private String exeTime;
+    private float satRate;
     private ArrayList<String> solutionValues;
 
+    public SolutionFormat(ArrayList<Integer> solutionValues,String time) {
+        this.exeTime = time;
+        this.solutionValues=new ArrayList<>();
+        for(Integer element:solutionValues)
+            this.solutionValues.add(String.valueOf(element));
+    }
     public String getTime() {
         return exeTime;
     }
@@ -36,5 +43,13 @@ public class SolutionFormat {
 
     public void setSolutionValues(ArrayList<String> solutionValues) {
         this.solutionValues = solutionValues;
+    }
+
+    public float getSatRate() {
+        return satRate;
+    }
+
+    public void setSatRate(float satRate) {
+        this.satRate = satRate;
     }
 }

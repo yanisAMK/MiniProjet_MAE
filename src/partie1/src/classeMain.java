@@ -35,6 +35,7 @@ public class classeMain {
     //Methode recursive qui fait un parcours en profondeur pour trouver une solution (si elle existe)
     // à un probleme SAT donné
     public void  DFS (int noeud, ArrayList<Integer> solution, int niveau,ArrayList<Integer> SATGlobal){
+        int nbsol=0;
         if(noeud==0){//Le Début du parcours
             DFS(abs(noeud)+1,solution,niveau+1,SATGlobal);
             DFS(-(abs(noeud)+1),solution,niveau+1,SATGlobal);
@@ -60,6 +61,7 @@ public class classeMain {
                     // le processus de recherche de solution s'arrete )
                     if(niveau==SATProblem.nombreVariables){
                         if( ensembleSatisfait(SATGlobal)){
+                            nbsol++;
                             solutionFound = true;
                             System.out.println(solution);
                             ArrayList<String> s = new ArrayList<>();
@@ -71,6 +73,7 @@ public class classeMain {
                             }
                             this.solution.setSolutionValues(s);
                             this.solution.setTime(String.valueOf(stopTime-startTime));
+                            this.solution.setSatRate( 100*nbsol/ SATProblem.getNombreClauses());
                         }
                     }
                 solution.remove(solution.size()-1);

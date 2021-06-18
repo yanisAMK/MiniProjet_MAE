@@ -3,15 +3,18 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
+import javafx.scene.control.Label;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
+
 import java.io.*;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Random;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import static java.lang.Math.abs;
 
@@ -22,12 +25,55 @@ public class MainSceneController implements Initializable {
     @FXML private Text nbvariables;
     @FXML private Label filenamelable;
     @FXML private ChoiceBox<String> algorithmeBox;
+    @FXML private ChoiceBox<String> chartBox;
+
     @FXML private ListView<String> solutionlist;
     //Myclass simple structure to hold the row values of Cnf Files
     @FXML   private TableView<Myclass> table;
     @FXML   private TableColumn<Myclass,String> c1 ;
     @FXML   private TableColumn<Myclass, String> c2 ;
     @FXML   private TableColumn<Myclass,String> c3 ;
+
+    @FXML private CategoryAxis x=new CategoryAxis();
+    @FXML private NumberAxis y=new NumberAxis();
+    @FXML private CategoryAxis xr=new CategoryAxis();
+    @FXML private NumberAxis yr=new NumberAxis();
+    @FXML   private BarChart<String,Number> bch=new BarChart<String, Number>(x,y);
+    @FXML   private BarChart<String,Number> bch_rate=new BarChart<String, Number>(xr,yr);
+
+    @FXML private Label par1;
+    @FXML private Label par2;
+    @FXML private Label par3;
+    @FXML private Label par4;
+    @FXML private Label par5;
+
+    @FXML private TextField param1;
+    @FXML private TextField param2;
+    @FXML private TextField param3;
+    @FXML private TextField param4;
+    @FXML private TextField param5;
+
+
+    /********chart**********/
+/*
+    static BarChart<String,Number> bc =
+            new BarChart<>(xAxis,yAxis);
+    private static HashMap<String,Number> chartData=new HashMap<>();*/
+    public static XYChart.Series <String, Number> series_dfs = new XYChart.Series<>();
+    public static XYChart.Series <String, Number> series_bfs= new XYChart.Series<>();
+    public static XYChart.Series <String, Number> series_pso = new XYChart.Series<>();
+    public static XYChart.Series <String, Number> series_ga = new XYChart.Series<>();
+    public static XYChart.Series <String, Number> series_a = new XYChart.Series<>();
+    public static XYChart.Series <String, Number> series_bso = new XYChart.Series<>();
+    /////////////////////////pour sat rate
+    public static XYChart.Series <String, Number> rate_dfs = new XYChart.Series<>();
+    public static XYChart.Series <String, Number> rate_bfs= new XYChart.Series<>();
+    public static XYChart.Series <String, Number> rate_pso = new XYChart.Series<>();
+    public static XYChart.Series <String, Number> rate_ga = new XYChart.Series<>();
+    public static XYChart.Series <String, Number> rate_a = new XYChart.Series<>();
+    public static XYChart.Series <String, Number> rate_bso = new XYChart.Series<>();
+
+
 
     //Contains the path to the file
     public String filePath;
@@ -53,7 +99,84 @@ public class MainSceneController implements Initializable {
         c1.setCellValueFactory( data -> data.getValue().getfirst());
         c2.setCellValueFactory( data -> data.getValue().getsecond());
         c3.setCellValueFactory( data -> data.getValue().getthird());
-        algorithmeBox.getItems().addAll("BFS","DFS","A*");
+        algorithmeBox.getItems().addAll("BFS","DFS","A*","PSO","BSO","GA");
+        chartBox.getItems().addAll("Satisfiability","Temps d'execution");
+
+        chartBox.setVisible(false);
+
+
+        series_dfs.setName("DFS");
+        series_bfs.setName("BFS");
+        series_ga.setName("GA");
+        series_a.setName("A*");
+        series_pso.setName("PSO");
+        series_bso.setName("BSO");
+
+
+        rate_dfs.setName("DFS");
+        rate_bfs.setName("BFS");
+        rate_ga.setName("GA");
+        rate_a.setName("A*");
+        rate_pso.setName("PSO");
+        rate_bso.setName("BSO");
+
+
+        x.setLabel("Algo");
+        y.setLabel("Execution Time");
+        bch.getData().addAll(series_dfs,series_bfs,series_a,series_pso,series_ga,series_bso);
+        bch_rate.getData().addAll(rate_dfs,rate_bfs,rate_ga,rate_a,rate_pso,rate_bso);
+        bch_rate.setVisible(false);
+
+        setLisibile(false);
+
+
+
+
+
+    }
+    public void parameters()
+    {
+
+        if(algorithmeBox.getValue().equals("PSO")) {
+            setLisibile(true);
+            par1.setText("Particles :");
+            par2.setText("Cnst1 :");
+            par3.setText("Cnst2 :");
+            par4.setText("Weight :");
+            par5.setText("Iterations :");
+            param1.setText("60");
+            param2.setText("1");
+            param3.setText("0.5");
+            param4.setText("10");
+            param5.setText("100");
+
+        }
+
+        if(algorithmeBox.getValue().equals("BSO")) {
+            setLisibile(true);
+            par1.setText("Bees :");
+            par2.setText("Flip :");
+            par3.setText("Max Chances :");
+            par4.setText("n°Local Searches :");
+            par5.setText("Iterations :");
+            param1.setText("10");
+            param2.setText("15");
+            param3.setText("5");
+            param4.setText("5");
+            param5.setText("300");
+        }
+    }
+
+    public void lanchChart()
+    {
+        if(algorithmeBox.getValue()!=null && !filenamelable.equals("")) {
+            try {
+                compute();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     /*
@@ -122,6 +245,7 @@ public class MainSceneController implements Initializable {
             //System.out.println(myclass.getthird().get() + " " + myclass.getsecond().get() + " " + myclass.getthird().get());
             m.add(new Myclass(myclass.getfirst().get(), myclass.getsecond().get(), myclass.getthird().get()));
         }
+
     }
 
     /*
@@ -129,17 +253,131 @@ public class MainSceneController implements Initializable {
     updates the values of exeTime and solutionlist
      */
     public void compute() throws IOException {
+
+//F initialisation
+
+
+
         System.out.println("Computing ...");
         if(algorithmeBox.getValue().equals("BFS")){
+            setLisibile(false);
             bfsAction();
+            /***chart*****/
+            if(chartBox.getValue().equals("Satisfiability"))
+            {
+                bch.setVisible(false);
+                bch_rate.setVisible(true);
+                rate_bfs.getData().add(new XYChart.Data("", Double.valueOf(solution.getSatRate())));
+
+            }
+            if(chartBox.getValue().equals("Temps d'execution"))
+            {
+             //   bch.getData().addAll(series_bfs);
+                bch_rate.setVisible(false);
+                bch.setVisible(true);
+                series_bfs.getData().add(new XYChart.Data("", Double.valueOf(solution.getTime())));
+
+            }
+
+
+
         }
         if(algorithmeBox.getValue().equals("DFS")){
+            setLisibile(false);
+
             dfsAction();
+            /***chart*****/
+            if(chartBox.getValue().equals("Satisfiability"))
+            {
+                bch.setVisible(false);
+                bch_rate.setVisible(true);
+                rate_dfs.getData().add(new XYChart.Data("", Double.valueOf(solution.getSatRate())));
+
+            }
+            if(chartBox.getValue().equals("Temps d'execution"))
+            {
+               // bch.getData().addAll(series_dfs);
+                bch_rate.setVisible(false);
+                bch.setVisible(true);
+                series_dfs.getData().add(new XYChart.Data("", Double.valueOf(solution.getTime())));
+
+            }
+
         }
         if(algorithmeBox.getValue().equals("A*")){
+            setLisibile(false);
+
             aAction();
+            /***chart*****/
+            if(chartBox.getValue().equals("Satisfiability"))
+            {
+
+            }
+            if(chartBox.getValue().equals("Temps d'execution"))
+            {
+               // bch.getData().addAll(series_a);
+                series_a.getData().add(new XYChart.Data("", Double.valueOf(solution.getTime())));
+
+            }
+
+
         }
-        System.out.println("Time: " + solution.getTime());
+        if(algorithmeBox.getValue().equals("PSO")){
+            setLisibile(true);
+            psoAction();
+            if(chartBox.getValue().equals("Satisfiability"))
+            {
+                bch.setVisible(false);
+                bch_rate.setVisible(true);
+                rate_pso.getData().add(new XYChart.Data("", Double.valueOf(solution.getSatRate())));
+
+            }
+            if(chartBox.getValue().equals("Temps d'execution"))
+            {
+              //  bch.getData().addAll(series_pso);
+                bch_rate.setVisible(false);
+                bch.setVisible(true);
+                series_pso.getData().add(new XYChart.Data("", Double.valueOf(solution.getTime())));
+
+            }
+        }
+        if(algorithmeBox.getValue().equals("BSO")){
+            setLisibile(true);
+            bsoAction();
+            if(chartBox.getValue().equals("Satisfiability"))
+            {
+
+            }
+            if(chartBox.getValue().equals("Temps d'execution"))
+            {
+               // bch.getData().addAll(series_bso);
+                bch_rate.setVisible(false);
+                bch.setVisible(true);
+                series_bso.getData().add(new XYChart.Data("", Double.valueOf(solution.getTime())));
+
+            }
+        }
+
+        if(algorithmeBox.getValue().equals("GA")) {
+            setLisibile(false);
+
+            gaAction();
+            /***chart*****/
+            if (chartBox.getValue().equals("Satisfiability")) {
+                bch.setVisible(false);
+                bch_rate.setVisible(true);
+                rate_dfs.getData().add(new XYChart.Data("", Double.valueOf(solution.getSatRate())));
+
+            }
+            if (chartBox.getValue().equals("Temps d'execution")) {
+                // bch.getData().addAll(series_dfs);
+                bch_rate.setVisible(false);
+                bch.setVisible(true);
+                series_ga.getData().add(new XYChart.Data("", Double.valueOf(solution.getTime())));
+
+            }
+        }
+            System.out.println("Time: " + solution.getTime());
         System.out.println("Values: "+ solution.getSolutionValues());
         // TODO: set values in solutionlist
         exetime.setText(solution.getTime() + "ms");
@@ -148,12 +386,15 @@ public class MainSceneController implements Initializable {
     }
 
 
+
+
+
     // algoBox = bfs
     public void bfsAction(){
         cnfObject = new cnf(filePath);
         timer = System.currentTimeMillis();
        // ArrayList<Integer> s = BreadthFirstSearch(cnfObject).getSolution();
-        ArrayList<Integer> s = PSO(cnfObject,1,2,100,4).getSolution();
+        ArrayList<Integer> s = BreadthFirstSearch(cnfObject).getSolution();
         solution.setTime(timer+"");
         solution.setSolutionValues(new ArrayList<String>());
         for (Integer i : s){
@@ -170,6 +411,7 @@ public class MainSceneController implements Initializable {
         dfs.startTime = System.currentTimeMillis();
         dfs.DFS(0,new ArrayList<>(),0,SATGlobal);
         solution.setTime(dfs.solution.getTime());
+        solution.setSatRate(dfs.solution.getSatRate());
         solution.setSolutionValues(dfs.solution.getSolutionValues());
     }
 
@@ -180,15 +422,66 @@ public class MainSceneController implements Initializable {
 
     }
 
+    // algoBox = bso
+    public void bsoAction(){
+        cnfObject = new cnf(filePath);
+        timer = System.currentTimeMillis();
+        // ArrayList<Integer> s = BreadthFirstSearch(cnfObject).getSolution();
 
 
+        ArrayList<Integer> s = BSO.searchBSO(cnfObject,Integer.valueOf(param2.getText()),Integer.valueOf(param1.getText()),
+                Integer.valueOf(param3.getText()),Integer.valueOf(param4.getText()),Integer.valueOf(param5.getText())).getSolution();
+
+
+        solution.setTime(System.currentTimeMillis()-timer +"");
+        solution.setSolutionValues(new ArrayList<String>());
+        for (Integer i : s){
+            int j = i>0 ? 1: 0;
+            solution.addSolutionValues("X" + abs(i) + ": " + j);
+        }
+    }
+
+
+
+    // algoBox = pso
+    public void psoAction(){
+        cnfObject = new cnf(filePath);
+        timer = System.currentTimeMillis();
+        // ArrayList<Integer> s = BreadthFirstSearch(cnfObject).getSolution();
+        ArrayList<Integer> s = PSO(cnfObject,Float.valueOf(param2.getText()),Float.valueOf(param3.getText()),
+                Integer.valueOf(param1.getText()),Integer.valueOf(param4.getText()),Integer.valueOf(param5.getText())).getSolution();
+
+        solution.setTime(System.currentTimeMillis()-timer +"");
+        solution.setSolutionValues(new ArrayList<String>());
+        for (Integer i : s){
+            int j = i>0 ? 1: 0;
+            solution.addSolutionValues("X" + abs(i) + ": " + j);
+        }
+
+
+    }
+
+    public void gaAction(){
+        int taillePopulation=50; //taille de population
+        double Pc=1;             //taux de croisement
+        double Pm=0.9;           //taux de mutation
+        long startTime, stopTime;
+        Population populationSAT = new Population(filePath);
+        startTime  = System.currentTimeMillis();
+        populationSAT.GeneticAlgorithm(taillePopulation,Pc, Pm);
+        stopTime  = System.currentTimeMillis();
+        solution = new SolutionFormat(populationSAT.SGbest.chromosome,String.valueOf(stopTime-startTime));
+        System.out.println(solution);
+    }
     public Solution BreadthFirstSearch(cnf clset) {////, long execTimeMillis) {
         LinkedList<Solution> open = new LinkedList<Solution>();
         Solution currentSol = new Solution(clset.getNombreVariables());
 
+
         Solution bestSolution = new Solution(currentSol);
 
         int randomLiteral;
+        int nbsol=0;
 
         long startTime = System.currentTimeMillis(); /* Save the start time of the search */
 
@@ -204,9 +497,9 @@ public class MainSceneController implements Initializable {
             for (int i = 0; i < 2; i++) { /* Loop TWO times for the chosen literal (left child) and its negation (right child) */
                 currentSol.changeLiteral(Math.abs(randomLiteral) - 1, i == 0 ? randomLiteral : -randomLiteral);
 
-                if (currentSol.satisfiedClauses(clset) > bestSolution.satisfiedClauses(clset))
+                if (currentSol.satisfiedClauses(clset) > bestSolution.satisfiedClauses(clset)) {
                     bestSolution = new Solution(currentSol); /* If current solution is better, update the best solution */
-
+                nbsol++;}
                 if (currentSol.isSolution(clset)) /* If this solution satisfies all clauses in "clset", return it */
                     return bestSolution;
 
@@ -214,15 +507,17 @@ public class MainSceneController implements Initializable {
             }
         } while (!open.isEmpty());
         timer = System.currentTimeMillis() -  startTime ;
+        bestSolution.setSatRate(100*nbsol/clset.getNombreClauses());
         return bestSolution;
 
     }
 
 
-    private Solution PSO (cnf cnf,int c1,int c2,int numParticle,int weight)
+    private Solution PSO (cnf cnf,float c1,float c2,int numParticle,int weight,int ittr)
     {
         ArrayList<particle> particles = new ArrayList<particle>();
 
+        int nbsol=0;
         Solution gbest=new Solution(cnf.getNombreVariables());//initialize gbest
 
         for(int i=0; i<numParticle; i++) {
@@ -247,8 +542,10 @@ public class MainSceneController implements Initializable {
                 particles.add(p);
 
 
-                if(gbest.satisfiedClauses(cnf) < particles.get(i).getCurrent_solution().satisfiedClauses(cnf))
+                if(gbest.satisfiedClauses(cnf) < particles.get(i).getCurrent_solution().satisfiedClauses(cnf)) {
                     gbest = particles.get(i).getCurrent_solution();
+                    nbsol++;
+                }
 
 
                 System.out.println("gbbst" + gbest);
@@ -257,7 +554,7 @@ public class MainSceneController implements Initializable {
 
 
 
-            for(int c=0; c<50; c++) {
+            for(int c=0; c<ittr; c++) {
 
                 for(particle particle : particles) {
                     /******update velocity************/
@@ -333,7 +630,24 @@ public class MainSceneController implements Initializable {
                     break;
             }
         }
+
+        gbest.setSatRate( 100*nbsol/cnf.getNombreClauses());
       return gbest;
+    }
+
+
+    public void setLisibile(boolean l){
+        par1.setVisible(l);
+        par2.setVisible(l);
+        par3.setVisible(l);
+        par4.setVisible(l);
+        par5.setVisible(l);
+        param1.setVisible(l);
+        param2.setVisible(l);
+        param3.setVisible(l);
+        param4.setVisible(l);
+        param5.setVisible(l);
+
     }
 
 }
