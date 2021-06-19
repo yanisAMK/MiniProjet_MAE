@@ -15,11 +15,11 @@ public class mainA {
 	public cnf fichierCNF ;
     public SolutionFormat startA () throws IOException{
 
-	Vector <Literal> liste = new Vector<Literal>();//la liste des littéraux de notre sat
+	Vector <Literal> liste = new Vector<Literal>();//la liste des littï¿½raux de notre sat
 	int i,k=0;
 	for(i=-fichierCNF.nombreVariables;i<=fichierCNF.nombreVariables;i++){//initialisatuion du vecteur de lit
 		if(i!=0)
-			{liste.add(new Literal(i));//0 ne sera pas instancié, chaque lit a comme : var=i et val=-1
+			{liste.add(new Literal(i));//0 ne sera pas instanciï¿½, chaque lit a comme : var=i et val=-1
 			}
 		
 	}
@@ -29,7 +29,7 @@ public class mainA {
 	for(i=0; i<fichierCNF.matrice.size();i++) {
 	    
 	    Vector <Literal> ListeLitteraux = new Vector<Literal>();
-	    for(int j=0; j<liste.size();j++) {//parcourir la liste de lit afin de recuperer les lit correspondant à la clause 
+	    for(int j=0; j<liste.size();j++) {//parcourir la liste de lit afin de recuperer les lit correspondant ï¿½ la clause 
 		if(fichierCNF.matrice.get(i).get(0)==liste.get(j).var) {
 		    ListeLitteraux.add(liste.get(j));
 		}
@@ -47,22 +47,22 @@ public class mainA {
 	
 	
 	Literal choisi=null; // le neoud choisi selon l'heuristique
-	Literal contraire=null; // la négation  du littéraux choisi
+	Literal contraire=null; // la nï¿½gation  du littï¿½raux choisi
 	sat sat = new sat(clauses, liste);//initialisation de notre prob sat
-	Vector<Literal> listeRand=new Vector<Literal>(); //la liste dont on vas ordonner les littéraux par fréquences
+	Vector<Literal> listeRand=new Vector<Literal>(); //la liste dont on vas ordonner les littï¿½raux par frï¿½quences
 
 
-	while(liste.size()>0) {//tanqu'il reste de littéraux dans la liste des littéraux 
-	    choisi=Literal.maxfrequence(liste, sat); //selectionner le Literal qui a maximum de fréquence
+	while(liste.size()>0) {//tanqu'il reste de littï¿½raux dans la liste des littï¿½raux 
+	    choisi=Literal.maxfrequence(liste, sat); //selectionner le Literal qui a maximum de frï¿½quence
 	    contraire = Literal.getContraire(liste, choisi);//recuperer la negation du lit
-	    Literal.removeChoisi(liste, choisi);//suprimer le littéral de la liste
-	    listeRand.add(0,choisi);//l'ajouter au début de la liste (par ce qu'on va parcourir les noeuds selon de nombre de clause vérifiée et alors le nombre de fréquence maximum
-	    listeRand.add(listeRand.size(), contraire);//rajouter la negation à la fin de la liste
+	    Literal.removeChoisi(liste, choisi);//suprimer le littï¿½ral de la liste
+	    listeRand.add(0,choisi);//l'ajouter au dï¿½but de la liste (par ce qu'on va parcourir les noeuds selon de nombre de clause vï¿½rifiï¿½e et alors le nombre de frï¿½quence maximum
+	    listeRand.add(listeRand.size(), contraire);//rajouter la negation ï¿½ la fin de la liste
 	   }
 	
-	sat.liste=listeRand;//reordonnancement de la liste des littéraux 
-	LinkedList<sat> open = new LinkedList<sat>();//liste ouvert qui va contenir les noeuds à developpés
-	Vector <sat> closed = new Vector<sat>();//liste fermée qui va contenir les noeuds deja developpés
+	sat.liste=listeRand;//reordonnancement de la liste des littï¿½raux 
+	LinkedList<sat> open = new LinkedList<sat>();//liste ouvert qui va contenir les noeuds ï¿½ developpï¿½s
+	Vector <sat> closed = new Vector<sat>();//liste fermï¿½e qui va contenir les noeuds deja developpï¿½s
 	this.x1 = sat;
 	this.x2 = open;
 	this.x3 = closed;

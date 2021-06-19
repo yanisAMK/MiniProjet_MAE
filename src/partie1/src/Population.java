@@ -20,11 +20,10 @@ public class Population {
         generation.globalFitness();
         SGbest= generation.Sbest;
         generation.AfficherGeneration(0);
-        this.population.add(generation);
         int j=1, maxIter=1,MaxIter=4500;
         while(!solutionFound && maxIter<MaxIter){
             ArrayList<Chromosome []> Parents = generation.Selection(taillePop);
-            ArrayList<Chromosome> Children = new ArrayList<>(); //fils de toute la generations
+            ArrayList<Chromosome> Children = new ArrayList<>(); //fils de toute la g�n�rations
             for (Chromosome[] pair :Parents) {
                 Chromosome [] Fils = {new Chromosome(), new Chromosome()};//2 fils de chaque pair
                 Fils= generation.Croisement(pair, Pc);
@@ -47,9 +46,7 @@ public class Population {
             generation.Sort();
             generation.AfficherGeneration(maxIter);
             if (generation.Sbest.fitness >= SGbest.fitness) SGbest= generation.Sbest;
-            //l'ajout de la nouvelle generation a la population globale
             SGbest.Fitness();
-            this.population.add(generation);
             j++;
             maxIter++;
         }
@@ -57,13 +54,16 @@ public class Population {
     public static void main(String[] args)  {
         int taillePopulation=50; //taille de population
         double Pc=1;             //taux de croisement
-        double Pm=0.9;           //taux de mutation
+        double Pm=0.7;           //taux de mutation
         long startTime, stopTime;
         Population populationSAT = new Population();
         startTime  = System.currentTimeMillis();
         populationSAT.GeneticAlgorithm(taillePopulation,Pc, Pm);
         stopTime  = System.currentTimeMillis();
         SolutionFormat solution = new SolutionFormat(SGbest.chromosome,String.valueOf(stopTime-startTime));
+        if (solutionFound) System.out.println("SAT");
+        else System.out.println("non SAT");
+        System.out.println(SGbest);
         System.out.println(solution);
     }
 }

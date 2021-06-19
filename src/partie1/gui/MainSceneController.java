@@ -99,7 +99,7 @@ public class MainSceneController implements Initializable {
         c1.setCellValueFactory( data -> data.getValue().getfirst());
         c2.setCellValueFactory( data -> data.getValue().getsecond());
         c3.setCellValueFactory( data -> data.getValue().getthird());
-        algorithmeBox.getItems().addAll("BFS","DFS","A*","PSO","BSO","GA");
+        algorithmeBox.getItems().addAll("PSO","BSO","GA","BFS","DFS","A*");
         chartBox.getItems().addAll("Satisfiability","Temps d'execution");
 
         chartBox.setVisible(false);
@@ -123,7 +123,7 @@ public class MainSceneController implements Initializable {
 
         x.setLabel("Algo");
         y.setLabel("Execution Time");
-        bch.getData().addAll(series_dfs,series_bfs,series_a,series_pso,series_ga,series_bso);
+        bch.getData().addAll(series_pso,series_ga,series_bso,series_dfs,series_bfs,series_a);
         bch_rate.getData().addAll(rate_dfs,rate_bfs,rate_ga,rate_a,rate_pso,rate_bso);
         bch_rate.setVisible(false);
 

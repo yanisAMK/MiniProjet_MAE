@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Generation {
@@ -87,7 +88,7 @@ public class Generation {
         //4 & 5 & 6
         int nbParents= Ps/2;
         if(nbParents%2==1)
-            nbParents=nbParents+1;//si le nombre d iterations est impair on rajoute une iteration pour qu'on peut choisir les parents deux a deux
+            nbParents=nbParents+1;//si le nombre d it�rations est impair on rajoute une it�ration pour qu'on peut choisir les parents deux � deux
         int nbCouples= nbParents/2;
         for(int i=0; i<nbCouples; i++) {
             Chromosome c1= this.ChromoChoisi(Intervalles);
@@ -106,7 +107,7 @@ public class Generation {
         //	}
         return Parents;
     }
-    //A partir d'une liste de chromosomes on creer listes contenant les differents intervalles de probabilites
+    //� partir d'une liste de chromosomes on creer listes contenant les diff�rents intervalles de probabilit�s
     public ArrayList<Double> CalculerIntervalles(ArrayList<Chromosome> ListChromo){
 
         ArrayList<Double> Intervalles= new ArrayList<Double>(); //attention la taille de cette liste est le nombre de chromo +1 (le 0)
@@ -119,7 +120,7 @@ public class Generation {
         }
         return Intervalles;
     }
-    //choisir un nombre aleatoire, a quel intervalle il appartient, retourner le chromosome choisi
+    //choisir un nombre al�atoire, � quel intervalle il appartient, retourner le chromosome choisi
     public Chromosome ChromoChoisi(ArrayList<Double> Intervalles) {
         //5
         double rand = Math.random();
@@ -146,16 +147,16 @@ public class Generation {
     public Chromosome[] Croisement(Chromosome[] pair, double Pc) {
         Chromosome [] tab= {new Chromosome(), new Chromosome()};
         Random random = new Random();
-        if(Math.random()<=Pc ) {
-            int randPoint= random.nextInt(pair[0].chromosome.size());//le point aleatoire de croisement
-            //creation et remplissage du premier fils
+        if(Math.random()<=Pc && pair[0].chromosome.size()>0) {
+            int randPoint= random.nextInt(pair[0].chromosome.size());//le point al�atoire de croisement
+            //cr�ation et remplissage du premier fils
             for(int i=0;i<=randPoint;i++) {
                 tab[0].chromosome.add(pair[0].chromosome.get(i));
             }
             for(int i=randPoint+1;i<pair[0].chromosome.size();i++) {
                 tab[0].chromosome.add(pair[1].chromosome.get(i));
             }
-            //creation et remplissage du premier fils
+            //cr�ation et remplissage du premier fils
             for(int i=0;i<=randPoint;i++) {
                 tab[1].chromosome.add(pair[1].chromosome.get(i));
             }
@@ -165,10 +166,10 @@ public class Generation {
         }
         return tab;
     }
-    //construction de la nouvelle generation
+    //construction de la nouvelle g�n�ration
     public Generation NewGeneration(Generation generation, Generation ChildrenGeneration) {
         int i = generation.generation.size()-1;        //taille de l'ancienne population
-        int j = ChildrenGeneration.generation.size()-1;//taille de la generation children
+        int j = ChildrenGeneration.generation.size()-1;//taille de la g�n�ration children
         int k = 0; //pour le remplissage de la nouvelle population
         ArrayList<Chromosome> NewGen = new ArrayList<Chromosome>();
         while((i>=0) && (j>=0) && (k<generation.generation.size())) {
